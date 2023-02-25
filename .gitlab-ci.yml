@@ -1,0 +1,46 @@
+stages:
+- build
+
+.build-job:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: build
+  variables:
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/busybox"
+  before_script:
+  - echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$REGISTRY_AUTH\"}}}" > /kaniko/.docker/config.json
+  script:
+  - /kaniko/executor --context . --dockerfile ./$DOCKERFILE --destination fjeannot/k8s-tools:$TAG --cache=true
+
+docker-build-prod:
+  extends: .build-job
+  variables:
+    TAG: stable
+  only:
+    - tags
+
+docker-build-prod-for-humans:
+  extends: .build-job
+  variables:
+    TAG: stable-humans
+  only:
+    refs:
+    - tags
+
+docker-build-for-humans:
+  extends: .build-job
+  variables:
+    TAG: humans
+  only:
+    refs:
+    - main
+
+
+docker-build-latest:
+  extends: .build-job
+  variables:
+    TAG: latest
+  only:
+    refs:
+    - main

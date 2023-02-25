@@ -1,0 +1,21 @@
+#!/bin/bash
+
+
+function roll {
+  str=`yq -r --arg RESSOURCE "$1" 'select(.kind==$RESSOURCE) .metadata.name' $PWD/$2`
+
+  for i in $(echo $str | tr " " "\n")
+  do
+    kubectl rollout status $1 $i
+  done
+}
+
+# Deployment
+roll Deployment $1
+
+# StatefulSet
+roll StatefulSet $1
+
+# DaemonSet
+roll DaemonSet $1
+

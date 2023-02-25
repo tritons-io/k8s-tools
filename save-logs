@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# This module takes a name or label selectors and will save to separate files the logs of all the pods that match the selectors or name in the current namespace.
+# The logs are saved in the current directory in files named after the pod name and the container name.
+
+import argparse
+from subprocess import Popen, PIPE
+from threading import Thread
+
+from kubernetes import client, config
+
+
+# Read the pod name or label selector from the command line. If no argument is provided, an error is raised.
+parser = argparse.ArgumentParser()
+parser.add_argument("name", type=str, default='not-used', nargs='?', help="The name of the pod to get the logs from")
+parser.add_argument("--label", "-l", type=str, action='append', default=[], help="The label selector to use to get the pods to get the logs from")
+args = parser.parse_args()
+
+
+if args.name == 'not-used' and len(args.label) == 0:
+    raise ValueError("You must provide a pod name or a label selector")
+
+# Create a kubernetes client
+config.load_kube_config()
+v1 = client.CoreV1Api()
+
+current_namespace = config.list_kube_config_contexts()[1]['context']['namespace']
+
+# Get the list of pods that match the name or label selector
+if args.name != 'not-used':
+    pods = v1.list_namespaced_pod(namespace=current_namespace, field_selector=f'metadata.name={args.name}')
+else:
+    pods = v1.list_namespaced_pod(namespace=current_namespace, label_selector=','.join(args.label))
+
+
+def write_log_threaded(pod_name, container_name, namespace):
+    """
+        This functions streams the logs of a container in a pod and writes them to a file.
+        We are using a subprocess to do that because the python kubernetes client is doing jack shit
+    """
+    fh = open(f'{pod_name}-{container_name}.log', 'w')
+    try:
+        print(f'Writing logs for container {container_name} in pod {pod_name} in file {pod_name}-{container_name}.log')
+        p = Popen(['kubectl', 'logs', '-f', pod_name, '-c', container_name, '-n', namespace], stdout=PIPE, stderr=PIPE)
+        for line in p.stdout:
+            print(line.decode('utf-8'), file=fh, end='')
+    except KeyboardInterrupt:
+        print(f'Closing file {pod_name}-{container_name}.log')
+        fh.close()
+
+
+threads = []
+for pod in pods.items:
+    print(pod.metadata.name)
+    for container in pod.spec.containers:
+
+        t = Thread(target=write_log_threaded, args=(pod.metadata.name, container.name, current_namespace))
+        t.start()
+        threads.append(t)
+
+print('All logs are being written in separate files. Press Ctrl+C to stop the process.')
+
+for t in threads:
+    t.join()

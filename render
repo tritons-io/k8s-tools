@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import sys
+
+import jinja2
+
+parser = argparse.ArgumentParser()
+parser.add_argument("file", help="File to render, '-' for stdin")
+parser.add_argument("stdin", nargs='?', type=argparse.FileType('r'), default=sys.stdin)
+parser.add_argument("-o", "--output", default="in-file")
+parser.add_argument('-a', '--additional-variables', action='append')
+args = parser.parse_args()
+
+if args.file == '-':
+    template = jinja2.Environment().from_string(args.stdin.read())
+else:
+    template = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(searchpath=os.getcwd())
+    ).get_template(args.file)
+
+environ = dict(os.environ.items())
+
+if args.additional_variables is not None:
+    for variable in args.additional_variables:
+        dico = variable.split("=")
+        if len(dico) == 2:
+            environ[dico[0]] = dico[1]
+
+text = str(template.render(environ))
+
+output = args.output
+if args.file == '-':
+    output = 'stdout'
+
+if output == "in-file":
+    with open(os.path.abspath(args.file), "w") as fh:
+        fh.write(text)
+
+if output == "stdout":
+    print(text)
