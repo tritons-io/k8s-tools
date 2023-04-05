@@ -22,12 +22,13 @@ Kubeconfigs folder must be a directory with your kubeconfig files named with the
 
 ## Commands  
 
-| Command  | Utility | Usage |
-|---|---|---|
-| `kontext` | Easily switch from namespaces | `kontext [NS_NAME]` |
-| `kluster` | Easily switch from clusters | `kluster [CLUSTER_NAME]` |
-| `rollout` | Perform a rollout status for all workload ressources defined in a yaml file | `rollout [FILENAME]` |
-| `render` | Render a yaml file, replacing {{}} surounded keys with the corresponding envvar | `render [FILENAME]` |
+| Command    | Utility                                                                                           | Usage                                     |
+|------------|---------------------------------------------------------------------------------------------------|-------------------------------------------|
+| `kontext`  | Easily switch from namespaces                                                                     | `kontext [NS_NAME]`                       |
+| `kluster`  | Easily switch from clusters                                                                       | `kluster [CLUSTER_NAME]`                  |
+| `rollout`  | Perform a rollout status for all workload ressources defined in a yaml file                       | `rollout [FILENAME]`                      |
+| `kevin`    | Get kubernetes events for a given ressource and an optional ressource name (`k`ube `ev`ents `in`) | `kevin [RESSOURCE_TYPE] [RESSOURCE_NAME]` |
+| `render`   | Render a yaml file, replacing {{}} surrounded keys with the corresponding env var                 | `render [FILENAME]`                       |
 
 ## Installed binaries
 
