@@ -15,15 +15,15 @@ args = parser.parse_args()
 
 if args.file == '-':
     environment = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(os.getcwd())
+        loader=jinja2.PackageLoader(os.getcwd())
     )
     template = environment.from_string(args.stdin.read())
 else:
-    loader = jinja2.FileSystemLoader(os.getcwd())
     environment = jinja2.Environment(
-        loader=loader
+        loader=jinja2.PackageLoader(os.getcwd())
     )
-    template = loader.get_template(args.file)
+    template = environment.get_template(args.file)
+
 
 environ = dict(os.environ.items())
 
