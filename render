@@ -27,7 +27,7 @@ else:
 
 environ = dict(os.environ.items())
 
-if args.additionnal_variables is not None:
+if args.additional_variables is not None:
     for variable in args.additional_variables:
         dico = variable.split("=")
         if len(dico) == 2:
