@@ -1,7 +1,6 @@
 alias k='kubectl'
-alias ll='ls -lash'
-alias ps1_kube='. ~/.prompt_kubectl'
-alias suka='bash --rcfile ~/.admin-bashrc -i'
+alias ps1_kube='. ~/k8s-tools/.prompt_kubectl'
+alias suka='bash --rcfile ~/k8s-tools/.admin-k8s-tools-bashrc -i'
 
 export HISTCONTROL=ignoredups:erasedups # no duplicate entries
 export HISTSIZE=10000                   # big big history
@@ -19,11 +18,12 @@ alias kustomize='kubectl kustomize'
 
 HISTFILE=~/.bash_history
 
-source ~/.kube-ps1
-source ~/.prompt_kubectl
+source ~/k8s-tools/.kube-ps1
+KUBE_PS1_CTX_COLOR=105
+PS1='[\u@\h \W $(kube_ps1)]\$ '
 
-source /utils/k8s-tools.bash
-source /utils/k8s-tools-completion.bash
+source ~/k8s-tools/utils/k8s-tools.bash
+source ~/k8s-tools/utils/k8s-tools-completion.bash
 
 echo "Welcome! Type 'kluster' to see available Kubernetes clusters."
 echo "Type 'kluster [CLUSTER_NAME]' to switch kubectl context to a cluster."

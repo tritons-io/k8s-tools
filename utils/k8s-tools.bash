@@ -1,5 +1,7 @@
 #!/bin/bash
 
+: ${CLUSTER_CONFIG_PATH:="~/.klusters/"}
+
 alias_to_kind() {
   echo $(kubectl api-resources | awk -v alias="$1" 'BEGIN{IGNORECASE = 1} $5 == alias {print $5}')
 }
@@ -14,10 +16,6 @@ function kdf {
 }
 
 function kluster {
-    if [ "${CLUSTER_CONFIG_PATH}" != "${HOME}/.klusters" ]; then
-    echo "you must setup CLUSTER_CONFIG_PATH to point to your klusters directory"
-    exit 1
-  fi
   if [ "$1" == "" ]; then
     echo "Clusters disponibles:"
     echo
@@ -27,19 +25,6 @@ function kluster {
     # Get the list of resources for the current cluster, and store it in a file as a list of names
     # This as well tests if the cluster is reachable
     echo "$(kubectl api-resources | awk 'NR>1 { print tolower($5) }')" > ~/.kube/current-cluster-resources
-  fi
-}
-
-function akluster {
-  if [ "$1" == "" ]; then
-    echo "Clusters disponibles:"
-    echo
-    ls "${ADMIN_CLUSTER_CONFIG_PATH}"
-  else
-    cp "${ADMIN_CLUSTER_CONFIG_PATH}${1}" ~/.kube/admin_config
-    # Get the list of resources for the current cluster, and store it in a file as a list of names
-    # This as well tests if the cluster is reachable
-    echo "$(ak api-resources | awk 'NR>1 { print tolower($5) }')" > ~/.kube/current-cluster-resources
   fi
 }
 
@@ -62,5 +47,4 @@ function kevin() {
 
 
 alias kontext="kubectl config set-context --current --namespace"
-alias akontext="ak config set-context --current --namespace"
 

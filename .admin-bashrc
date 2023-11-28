@@ -1,14 +1,14 @@
+#!/bin/bash
+
 alias k='kubectl'
 alias ll='ls -lash'
-alias ps1_kube='. ~/.prompt_kubectl'
-alias suka='bash --rcfile ~/.admin-bashrc -i'
-alias ak='KUBECONFIG=~/.admin_klusters/config kubectl'
+alias ps1_kube='. ~/k8s-tools/.prompt_kubectl'
+alias suka='bash --rcfile ~/k8s-tools/.admin-bashrc -i'
+alias ak='KUBECONFIG=~/.admin-cluster/config kubectl'
 
 export HISTCONTROL=ignoredups:erasedups # no duplicate entries
 export HISTSIZE=10000                   # big big history
 export HISTFILESIZE=10000               # big big history
-export ADMIN_CLUSTER_CONFIG_PATH=~/.admin_klusters/klusters/
-mkdir -p $ADMIN_CLUSTER_CONFIG_PATH
 
 # shopt -s histappend                     # append to history, don't overwrite it
 #export PROMPT_COMMAND="history -a; history -c; history -r"
@@ -21,11 +21,11 @@ source <(helm completion bash)
 alias kustomize='kubectl kustomize'
 
 HISTFILE=~/.bash_history
-source ~/.admin-kube-ps1
-source ~/.prompt_kubectl
+source ~/k8s-tools/.admin-kube-ps1
+PS1='[\u@\h \W $(akube_ps1)]\$ '
 
-source ~/utils/admin-k8s-tools.bash
-source ~/utils/admin-k8s-tools-completion.bash
+source ~/k8s-tools/utils/admin-k8s-tools.bash
+source ~/k8s-tools/utils/admin-k8s-tools-completion.bash
 
 echo "Welcome! Type 'akluster' to see available production Kubernetes clusters."
 echo "Type 'akluster [CLUSTER_NAME]' to switch kubectl context to a production cluster."

@@ -1,5 +1,4 @@
-#/usr/bin/env bash
-
+#!/usr/bin/env bash
 
 exists_in_list() {
   LIST=$1
@@ -29,13 +28,6 @@ _kontext_completions () {
   fi
 }
 
-_akontext_completions () {
-  if [ $COMP_CWORD -eq 1 ]
-  then
-    COMPREPLY=($(compgen -W "$(ak get ns -o=jsonpath='{.items[*].metadata.name}')" -- "${COMP_WORDS[1]}"))
-  fi
-}
-
 _kevin_completions () {
   COMPREPLY=()
   local cur="${COMP_WORDS[COMP_CWORD]}"
@@ -61,17 +53,7 @@ _kluster_completions () {
   fi
 }
 
-_akluster_completions () {
-  if [ $COMP_CWORD -eq 1 ]
-  then
-    COMPREPLY=($(compgen -W "$(ls $ADMIN_CLUSTER_CONFIG_PATH)" -- "${COMP_WORDS[1]}"))
-  fi
-}
-
-
 complete -F _kdf_completions kdf
 complete -F _kontext_completions kontext
-complete -F _akontext_completions akontext
 complete -F _kevin_completions kevin
 complete -F _kluster_completions kluster
-complete -F _akluster_completions akluster

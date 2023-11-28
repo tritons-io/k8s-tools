@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 
 exists_in_list() {
@@ -15,7 +15,7 @@ exists_in_list() {
 }
 
 
-_kdf_completions () {
+_akdf_completions () {
   if [ $COMP_CWORD -eq 1 ]
   then
     COMPREPLY=($(compgen -W "$(k get pods -o=jsonpath='{.items[*].metadata.name}')" -- "${COMP_WORDS[1]}"))
@@ -29,7 +29,7 @@ _akontext_completions () {
   fi
 }
 
-_kevin_completions () {
+_akevin_completions () {
   COMPREPLY=()
   local cur="${COMP_WORDS[COMP_CWORD]}"
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -55,7 +55,7 @@ _akluster_completions () {
 }
 
 
-complete -F _kdf_completions kdf
+complete -F _akdf_completions akdf
 complete -F _akontext_completions akontext
-complete -F _kevin_completions kevin
+complete -F _akevin_completions akevin
 complete -F _akluster_completions akluster

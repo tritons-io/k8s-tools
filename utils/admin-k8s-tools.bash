@@ -1,7 +1,9 @@
 #!/bin/bash
 
+: ${ADMIN_CLUSTER_CONFIG_PATH:="${HOME}/.admin_klusters/"}
+
 aalias_to_kind() {
-  echo $(KUBECONFIG=~/.admin_klusters/config kubectl api-resources | awk -v alias="$1" 'BEGIN{IGNORECASE = 1} $5 == alias {print $5}')
+  echo $(KUBECONFIG=~/.admin-cluster/config kubectl api-resources | awk -v alias="$1" 'BEGIN{IGNORECASE = 1} $5 == alias {print $5}')
 }
 
 function akdf {
@@ -9,7 +11,7 @@ function akdf {
   then
     echo "missing pod name"
   else
-    KUBECONFIG=~/.admin_klusters/config kubectl exec "$1" -- df -h
+    KUBECONFIG=~/.admin-cluster/config kubectl exec "$1" -- df -h
   fi
 }
 
@@ -19,7 +21,7 @@ function akluster {
     echo
     ls "${ADMIN_CLUSTER_CONFIG_PATH}"
   else
-    cp "${ADMIN_CLUSTER_CONFIG_PATH}${1}" ~/.admin_klusters/config
+    cp "${ADMIN_CLUSTER_CONFIG_PATH}${1}" ~/.admin-cluster/config
     # Get the list of resources for the current cluster, and store it in a file as a list of names
     # This as well tests if the cluster is reachable
     echo "$(ak api-resources | awk 'NR>1 { print tolower($5) }')" > ~/.kube/current-admin-cluster-resources
@@ -37,9 +39,9 @@ function akevin() {
   fi
   ressource=$(aalias_to_kind "$ressource")
   if [ "$ressource_name" != "" ]; then
-    KUBECONFIG=~/.admin_klusters/config kubectl get events --field-selector "involvedObject.kind=$ressource,involvedObject.name=$ressource_name" -w
+    KUBECONFIG=~/.admin-cluster/config kubectl get events --field-selector "involvedObject.kind=$ressource,involvedObject.name=$ressource_name" -w
   else
-    KUBECONFIG=~/.admin_klusters/config kubectl get events --field-selector "involvedObject.kind=$ressource" -w
+    KUBECONFIG=~/.admin-cluster/config kubectl get events --field-selector "involvedObject.kind=$ressource" -w
   fi
 }
 

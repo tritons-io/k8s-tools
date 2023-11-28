@@ -22,7 +22,7 @@
 
 # Default values for the prompt
 # Override these values in ~/.zshrc or ~/.bashrc
-KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl}"
+KUBE_PS1_BINARY="${KUBE_PS1_BINARY:-kubectl --kubeconfig $HOME/.admin-cluster/config}"
 KUBE_PS1_SYMBOL_ENABLE="${KUBE_PS1_SYMBOL_ENABLE:-true}"
 KUBE_PS1_SYMBOL_DEFAULT=${KUBE_PS1_SYMBOL_DEFAULT:-$'\u2388 '}
 KUBE_PS1_SYMBOL_USE_IMG="${KUBE_PS1_SYMBOL_USE_IMG:-false}"
@@ -227,7 +227,7 @@ _kube_ps1_update_cache() {
 
 _kube_ps1_get_context() {
   if [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]]; then
-    KUBE_PS1_CONTEXT="$(ak config current-context 2>/dev/null)"
+    KUBE_PS1_CONTEXT="$(kubectl --kubeconfig ${HOME}/.admin-cluster/config config current-context 2>/dev/null)"
     # Set namespace to 'N/A' if it is not defined
     KUBE_PS1_CONTEXT="${KUBE_PS1_CONTEXT:-N/A}"
 
@@ -239,7 +239,7 @@ _kube_ps1_get_context() {
 
 _kube_ps1_get_ns() {
   if [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    KUBE_PS1_NAMESPACE="$(ak config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
+    KUBE_PS1_NAMESPACE="$(kubectl --kubeconfig ${HOME}/.admin-cluster/config config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
     # Set namespace to 'default' if it is not defined
     KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
 
@@ -318,7 +318,7 @@ pkubeoff() {
 }
 
 # Build our prompt
-kube_ps1() {
+akube_ps1() {
   [[ "${KUBE_PS1_ENABLED}" == "off" ]] && return
   [[ -z "${KUBE_PS1_CONTEXT}" ]] && [[ "${KUBE_PS1_CONTEXT_ENABLE}" == true ]] && return
 
