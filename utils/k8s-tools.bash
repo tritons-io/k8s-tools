@@ -1,6 +1,6 @@
 #!/bin/bash
 
-: ${CLUSTER_CONFIG_PATH:="~/.klusters/"}
+: ${CLUSTER_CONFIG_PATH:="${HOME}/.klusters/"}
 
 alias_to_kind() {
   echo $(kubectl api-resources | awk -v alias="$1" 'BEGIN{IGNORECASE = 1} $5 == alias {print $5}')
