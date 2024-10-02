@@ -1,6 +1,5 @@
 #!/bin/bash
 
-alias k='kubectl'
 alias ll='ls -lash'
 alias ps1_kube='. ~/k8s-tools/.prompt_kubectl'
 alias suka='bash --rcfile ~/k8s-tools/.admin-bashrc -i'
