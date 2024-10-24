@@ -45,6 +45,26 @@ function kevin() {
   fi
 }
 
+function ksecret() {
+    local secret_name=$1
+    local field=$2
+    if [ "$secret_name" == "" ]; then
+      echo "Decodes Kubernetes secrets"
+      echo "Usage: ksecret <secret_name> [secret_field]"
+      return 0
+    fi
+    if [ "$field" == "" ]; then
+      while read -r line
+      do
+        key=$(echo $line | cut -d ":" -f 1)
+        value=$(echo $line | cut -d " " -f 2 | base64 -d)
+        echo "${key}: ${value}"
+      done < <(kubectl get secret $secret_name -o json | yq -r '.data' -y)
+      return
+    fi
+    kubectl get secret $secret_name -o json | jq -r ".data.${field}" | base64 -d
+}
+
 
 alias kontext="kubectl config set-context --current --namespace"
 
