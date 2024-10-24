@@ -62,7 +62,7 @@ function ksecret() {
       done < <(kubectl get secret $secret_name -o json | yq -r '.data' -y)
       return
     fi
-    kubectl get secret $secret_name -o json | jq -r ".data.${field}" | base64 -d
+    kubectl get secret $secret_name -o json | jq -r ".data.${field}" | base64 -d && echo
 }
 
 
